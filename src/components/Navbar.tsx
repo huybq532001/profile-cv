@@ -1,84 +1,111 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import reactLogo from "../assets/react.svg"; // ✅ logo react từ vite mặc định
+import ThemeToggle from "./ThemeToggle";
+import { useTheme } from "../theme";
 
 const NAV_ITEMS = [
-  { id: "home", label: "Trang chủ" },
-  { id: "skills", label: "Kỹ năng" },
-  { id: "projects", label: "Dự án" },
-  { id: "experience", label: "Kinh nghiệm" },
-  { id: "education", label: "Học vấn" },
-  { id: "contact", label: "Liên hệ" },
+  { label: "Trang chủ", href: "#home" },
+  { label: "Kỹ năng", href: "#skills" },
+  { label: "Dự án", href: "#projects" },
+  { label: "Kinh nghiệm", href: "#experience" },
+  { label: "Học vấn", href: "#education" },
+  { label: "Liên hệ", href: "#contact" },
 ];
 
 export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    function handleScroll() {
-      setScrolled(window.scrollY > 40);
-    }
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const [open, setOpen] = useState(false);
+  const { theme } = useTheme();
 
   return (
-    <nav
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-        scrolled ? "backdrop-blur-md bg-black/40 border-b border-white/10" : "bg-transparent"
-      }`}
-    >
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:py-4">
-        {/* LOGO React */}
-        <div className="flex items-center gap-2">
-          <img
-            src={reactLogo}
-            alt="React Logo"
-            className="h-10 w-10 animate-spin-slow drop-shadow-lg"
-          />
-          <span className="text-lg font-bold text-white">My Hồ Sơ</span>
-        </div>
+    <header className="fixed top-0 inset-x-0 z-50">
+      {/* Nền mờ + viền, dùng biến màu để “ăn” theme */}
+      <div
+        className="
+          backdrop-blur-md border-b transition-colors
+          bg-[color:var(--card)]/70 border-[color:var(--border)]
+        "
+        style={{
+          WebkitBackdropFilter: "blur(12px)",
+          backdropFilter: "blur(12px)",
+        }}
+      >
+        <nav className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3 md:py-4">
+          {/* Logo */}
+          <a href="#home" className="flex items-center gap-2 font-semibold">
+            <div className="h-8 w-8 shrink-0">
+              <img
+                src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg"
+                alt="React Logo"
+                className="h-8 w-8"
+              />
+            </div>
+            <span className="text-[color:var(--fg)] text-lg">MyCV</span>
+          </a>
 
-        {/* Desktop menu */}
-        <div className="hidden md:flex gap-6">
-          {NAV_ITEMS.map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              className="text-white/80 hover:text-white relative transition group"
-            >
-              {item.label}
-              {/* underline animation */}
-              <span className="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-cyan-300 transition-all duration-300 group-hover:w-full" />
-            </a>
-          ))}
-        </div>
+          {/* Desktop menu */}
+          <div className="hidden md:flex items-center gap-6">
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="
+                  transition-colors font-medium
+                  text-[color:var(--fg)]/80 hover:text-[color:var(--fg)]
+                "
+              >
+                {item.label}
+              </a>
+            ))}
+            <ThemeToggle />
+          </div>
 
-        {/* Mobile toggle */}
-        <button
-          onClick={() => setMenuOpen((p) => !p)}
-          className="md:hidden text-white"
-        >
-          {menuOpen ? <X size={26} /> : <Menu size={26} />}
-        </button>
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="
+              md:hidden p-2 rounded-lg transition-colors
+              text-[color:var(--fg)]
+              hover:bg-black/10
+            "
+            aria-label="Toggle menu"
+          >
+            {open ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </nav>
+
+        {/* Mobile dropdown */}
+        {open && (
+          <div className="md:hidden flex flex-col gap-3 px-4 pb-4">
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="
+                  block py-2 rounded-lg px-2 font-medium transition-colors
+                  text-[color:var(--fg)]/80 hover:text-[color:var(--fg)]
+                  hover:bg-black/5
+                "
+              >
+                {item.label}
+              </a>
+            ))}
+            <ThemeToggle />
+          </div>
+        )}
       </div>
 
-      {/* Mobile menu dropdown */}
-      {menuOpen && (
-        <div className="md:hidden flex flex-col items-center gap-4 pb-6 animate-fadeIn">
-          {NAV_ITEMS.map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              className="text-white/90 hover:text-white text-lg"
-              onClick={() => setMenuOpen(false)}
-            >
-              {item.label}
-            </a>
-          ))}
-        </div>
+      {/* Viền sáng rất nhẹ ở light để gợi “bụi sao” */}
+      {theme === "light" && (
+        <div
+          aria-hidden
+          className="pointer-events-none h-px w-full"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent, rgba(2,6,23,0.1), transparent)",
+          }}
+        />
       )}
-    </nav>
+    </header>
   );
 }

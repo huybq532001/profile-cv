@@ -4,17 +4,15 @@ import { DATA } from "../data/portfolioData";
 
 export default function Experience() {
   return (
-    <Section id="experience" title="Kinh nghiệm">
-      <div className="space-y-6">
+    <Section id="experience" title="Kinh nghiệm" subtitle="Hoạt động & công việc liên quan">
+      <div className="grid gap-6 md:grid-cols-2">
         {DATA.experience.map((exp) => (
-          <Card key={exp.role} className="rounded-xl border border-white/10">
-            <h4 className="font-medium text-white">{exp.role}</h4>
-            <p className="text-sm text-gray-500 text-white/70">{exp.company}</p>
-            <p className="text-xs text-gray-400">{exp.period}</p>
-            <ul className="list-disc pl-5 mt-2 text-sm space-y-1">
-              {exp.points.map((pt: string, i: number) => (
-                <li key={i}>{pt}</li>
-              ))}
+          <Card key={exp.role}>
+            <h4 className="font-medium text-[color:var(--fg)]">{exp.role}</h4>
+            <p className="text-sm text-[color:var(--fg)]/70">{exp.company}</p>
+            <p className="text-xs text-[color:var(--fg)]/60">{exp.period}</p>
+            <ul className="list-disc pl-5 mt-3 space-y-1 text-[color:var(--fg)]/85">
+              {exp.points.map((pt: string, i: number) => <li key={i}>{pt}</li>)}
             </ul>
           </Card>
         ))}

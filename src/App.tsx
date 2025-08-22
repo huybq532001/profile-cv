@@ -1,3 +1,4 @@
+// src/App.tsx
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Skills from "./components/Skills";
@@ -9,7 +10,8 @@ import Footer from "./components/Footer";
 
 function App() {
   return (
-   <div className="min-h-screen bg-[#0b0d15]">
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)] galaxy-bg">
+      <div className="galaxy-grid" />
       <Navbar />
       <Hero />
       <Skills />
@@ -21,5 +23,4 @@ function App() {
     </div>
   );
 }
-
 export default App;

@@ -8,15 +8,19 @@ export default function Section({
     <section id={id} className="scroll-mt-28 py-16 md:py-24">
       <div className="mx-auto max-w-6xl px-4">
         <motion.h2
-          initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.5 }}
-          className="text-2xl md:text-3xl font-semibold tracking-tight text-white"
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-2xl md:text-3xl font-semibold tracking-tight text-[color:var(--fg)]"
         >
           {title}
         </motion.h2>
+
         {subtitle && (
-          <p className="mt-2 text-white/70">{subtitle}</p>
+          <p className="mt-2 text-[color:var(--fg)]/70">{subtitle}</p>
         )}
+
         <div className="mt-8">{children}</div>
       </div>
     </section>

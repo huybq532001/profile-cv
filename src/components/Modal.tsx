@@ -1,20 +1,43 @@
-import { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 export default function Modal({
   open,
   onClose,
-  children,
   title,
+  children,
 }: {
   open: boolean;
   onClose: () => void;
-  children: React.ReactNode;
   title?: string;
+  children?: React.ReactNode;
 }) {
+  const panelRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "Tab") {
+        // focus trap rất nhẹ
+        const focusables = panelRef.current?.querySelectorAll<HTMLElement>(
+          'a,button,textarea,input,select,[tabindex]:not([tabindex="-1"])'
+        );
+        if (!focusables || focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          last.focus(); e.preventDefault();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          first.focus(); e.preventDefault();
+        }
+      }
+    };
     document.addEventListener("keydown", onKey);
+    // auto focus
+    setTimeout(() => {
+      const el = panelRef.current?.querySelector<HTMLElement>("[data-autofocus]");
+      el?.focus();
+    }, 0);
     return () => document.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
@@ -22,28 +45,37 @@ export default function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      aria-modal
+      className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center"
+      aria-modal="true"
       role="dialog"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
-      {/* Overlay */}
-      <button
-        className="absolute inset-0 bg-black/60"
-        onClick={onClose}
-        aria-label="Đóng"
-      />
-      {/* Panel */}
-      <div className="relative max-h-[85vh] w-full max-w-2xl overflow-hidden rounded-2xl border border-white/10 bg-[#101420] text-white shadow-2xl">
-        <div className="flex items-center justify-between border-b border-white/10 px-5 py-3">
-          <h3 className="text-lg font-medium">{title}</h3>
+      {/* overlay */}
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+      {/* panel */}
+      <div
+        ref={panelRef}
+        className="
+          relative w-full sm:max-w-2xl sm:rounded-2xl
+          bg-[color:var(--card)] border border-[color:var(--border)]
+          [box-shadow:var(--shadow-card)]
+          max-h-[85vh] overflow-auto
+        "
+      >
+        <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-[color:var(--border)]">
+          <h3 className="text-[color:var(--fg)] font-medium">{title}</h3>
           <button
             onClick={onClose}
-            className="rounded-lg px-2 py-1 text-white/70 hover:bg-white/10"
+            className="rounded-lg px-2 py-1 text-[color:var(--fg)]/80 hover:bg-black/10"
+            data-autofocus
+            aria-label="Đóng"
           >
             ✕
           </button>
         </div>
-        <div className="max-h-[70vh] overflow-y-auto p-5">{children}</div>
+        <div className="p-5 text-[color:var(--fg)]">{children}</div>
       </div>
     </div>
   );

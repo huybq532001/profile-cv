@@ -1,60 +1,219 @@
 @import "tailwindcss";
 
-/* Base text & background */
+/* =========================
+   Base & smooth transitions
+   ========================= */
+html, body, #root { height: 100%; }
+* { transition: background-color .25s ease, color .25s ease, border-color .25s ease; }
+
+/* =========================
+   THEME VARIABLES
+   - Dark (mặc định)
+   - Light (Stardust Pastel)
+   ========================= */
 :root {
+  /* Core */
+  --bg: #0b0d15;
+  --fg: rgb(243 244 246);
+  --muted: rgba(243,244,246,.7);
+  --card: #0f1320;
+  --border: rgba(255,255,255,.08);
+
+  /* Buttons */
+  --btn-bg: rgba(255,255,255,.06);
+  --btn-bg-hover: rgba(255,255,255,.12);
+  --btn-fg: var(--fg);
+
+  /* Utilities */
+  --track: rgba(255,255,255,.10);             /* progress track */
+  --accent: #22d3ee;                          /* accent chung */
+  --shadow-card: 0 10px 40px -15px rgba(0,0,0,.60);
+
+  /* Hero (dark fallback) */
+  --hero-surface: #0f1320;
+
   color-scheme: dark;
 }
-html, body, #root {
-  height: 100%;
-}
-body {
-  background: #0b0d15;
-  color: rgb(243 244 246); /* gray-100 */
+
+.theme-light {
+  /* Core */
+  --bg: #f8fafc;               /* slate-50 */
+  --fg: #0b1220;               /* deep navy */
+  --muted: rgba(11,18,32,.7);
+  --card: #ffffff;
+  --border: rgba(2,6,23,.08);
+
+  /* Buttons */
+  --btn-bg: rgba(2,6,23,.04);
+  --btn-bg-hover: rgba(2,6,23,.08);
+  --btn-fg: #0b1220;
+
+  /* Utilities */
+  --track: rgba(2,6,23,.10);
+  --accent: #6366f1;           /* indigo-500 */
+  --shadow-card: 0 18px 40px -22px rgba(2,6,23,.25);
+
+  /* Hero (light) */
+  --hero-surface: #ffffff;
+  --hero-ring-1: rgba(99,102,241,.35);
+  --hero-ring-2: rgba(236,72,153,.28);
+  --hero-ring-3: rgba(34,211,238,.32);
+  --hero-shadow: 0 18px 40px -22px rgba(2,6,23,.25);
+  --title-gradient-from: #4f46e5;
+  --title-gradient-via:  #d946ef;
+  --title-gradient-to:   #06b6d4;
+  --pill-bg: linear-gradient(90deg,#eef2ff,#fff1f9,#ecfeff);
+  --pill-text: #0b1220;
+  --outline-grad: linear-gradient(90deg,
+                      rgba(99,102,241,.35),
+                      rgba(236,72,153,.28),
+                      rgba(34,211,238,.32));
+  color-scheme: light;
 }
 
-/* Galaxy layers (lưới + nebula) */
-.galaxy-bg {
-  position: relative;
-  isolation: isolate;
-}
-.galaxy-bg::before {
-  content: "";
-  position: absolute;
-  inset: 0;
+/* Apply theme colors to page */
+body { background: var(--bg); color: var(--fg); }
+
+/* =========================
+   GALAXY / BACKDROP LAYERS
+   ========================= */
+.galaxy-bg { position: relative; isolation: isolate; }
+
+/* Dark (Galaxy) backdrop */
+.theme-dark .galaxy-bg::before,
+:root:not(.theme-light) .galaxy-bg::before {
+  content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none;
   background:
     radial-gradient(1200px 600px at 80% 10%, rgba(124,58,237,0.18), transparent 60%),
     radial-gradient(1000px 500px at 15% 20%, rgba(6,182,212,0.12), transparent 65%),
     radial-gradient(800px 500px at 70% 80%, rgba(236,72,153,0.12), transparent 60%);
-  z-index: -2;
-  pointer-events: none;
 }
+
+/* Light (Stardust Pastel) backdrop — nếu bạn vẫn dùng galaxy-bg ở light */
+.theme-light .galaxy-bg::before {
+  content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none;
+  background:
+    radial-gradient(1100px 520px at 78% 12%, rgba(168,85,247,0.10), transparent 58%),
+    radial-gradient(1000px 520px at 16% 24%, rgba(56,189,248,0.10), transparent 62%),
+    radial-gradient(900px 560px at 70% 80%, rgba(244,114,182,0.10), transparent 60%),
+    radial-gradient(800px 420px at 50% 0%, rgba(236,253,245,0.35), transparent 70%);
+}
+
+/* Grid overlay */
 .galaxy-grid {
-  position: absolute;
-  inset: 0;
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background-image:
     linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
   background-size: 40px 40px;
   mask-image: radial-gradient(circle at 50% 40%, black 35%, transparent 75%);
-  z-index: -1;
-  pointer-events: none;
 }
 
-/* Glow tiện dụng cho nút/ảnh */
-.glow-ring {
-  position: relative;
+/* Grid tint cho Light */
+.theme-light .galaxy-grid {
+  background-image:
+    linear-gradient(to right, rgba(2,6,23,0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(2,6,23,0.06) 1px, transparent 1px);
+  mask-image: radial-gradient(circle at 50% 40%, black 45%, transparent 80%);
 }
-.glow-ring::after {
-  content: "";
-  position: absolute; inset: -1px;
-  border-radius: inherit;
-  background: conic-gradient(from 180deg at 50% 50%,
-    rgba(99,102,241,0.35),
-    rgba(6,182,212,0.25),
-    rgba(236,72,153,0.25),
-    rgba(99,102,241,0.35)
-  );
-  filter: blur(16px);
-  opacity: .6;
+
+/* =========================
+   HERO LIGHT — AURORA + SPOTLIGHT + WAVE
+   ========================= */
+
+/* Container cho nền light đặc biệt */
+.heroLight-auroraWrap {
+  position: absolute;
+  inset: 0;
   z-index: -1;
+  pointer-events: none;
+  isolation: isolate;
 }
+
+/* AURORA: 2 dải lớn phía sau, chuyển động chậm */
+.heroLight-auroraWrap .aurora {
+  position: absolute;
+  inset: -20% -10% -10% -10%;
+  filter: blur(42px);
+  opacity: .85;
+  mix-blend-mode: screen; /* nổi bật trên nền sáng */
+  animation: auroraShift 14s ease-in-out infinite alternate;
+  background:
+    radial-gradient(60% 60% at 20% 30%, rgba(30,58,138,.25), transparent 60%),   /* navy */
+    radial-gradient(65% 60% at 75% 35%, rgba(245,158,11,.28), transparent 62%), /* amber */
+    radial-gradient(70% 65% at 55% 70%, rgba(220,38,38,.22), transparent 65%);  /* red */
+}
+.heroLight-auroraWrap .aurora.aurora-2 {
+  transform: rotate(12deg);
+  animation-duration: 18s;
+  background:
+    radial-gradient(60% 60% at 70% 25%, rgba(245,158,11,.25), transparent 60%), /* amber */
+    radial-gradient(65% 60% at 35% 65%, rgba(30,58,138,.24), transparent 62%),  /* navy */
+    radial-gradient(70% 65% at 50% 85%, rgba(107,114,128,.22), transparent 65%);/* steel gray */
+}
+
+/* SPOTLIGHT: tạo tiêu điểm ở khối text bên trái */
+.heroLight-auroraWrap .spotlight {
+  position: absolute;
+  left: max(0px, (100% - 1200px)/2); /* canh theo container 1200 */
+  top: 8%;
+  width: min(56%, 680px);
+  height: 70%;
+  background: radial-gradient(60% 60% at 40% 35%, rgba(255,255,255,.85), rgba(255,255,255,0));
+  z-index: -1;
+  filter: blur(6px);
+  opacity: .9;
+}
+
+/* WAVE divider dưới hero (light) */
+.heroLight-wave {
+  position: relative;
+  height: 120px;
+  margin-top: -60px;         /* kéo wave ăn vào hero */
+  z-index: 0;
+}
+.heroLight-wave::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(#fff, rgba(255,255,255,0));
+  -webkit-mask: url('data:image/svg+xml;utf8,\
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">\
+    <path d="M0,80 C300,120 900,0 1200,60 L1200,120 L0,120 Z" fill="black"/>\
+  </svg>') no-repeat center / 100% 100%;
+          mask: url('data:image/svg+xml;utf8,\
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">\
+    <path d="M0,80 C300,120 900,0 1200,60 L1200,120 L0,120 Z" fill="black"/>\
+  </svg>') no-repeat center / 100% 100%;
+  opacity: .9;
+}
+
+/* heading underline shimmer (nhẹ, tùy chọn) */
+.hero-name {
+  background-size: 200% 100%;
+  animation: nameShimmer 6s ease-in-out infinite;
+}
+
+/* Keyframes */
+@keyframes auroraShift {
+  0%   { transform: translate3d(-4%, -2%, 0) rotate(-6deg) scale(1.02); }
+  50%  { transform: translate3d(3%, 3%, 0) rotate(4deg) scale(1.04); }
+  100% { transform: translate3d(-2%, 0%, 0) rotate(-3deg) scale(1.02); }
+}
+@keyframes nameShimmer {
+  0%,100% { background-position: 0% 50%; }
+  50%     { background-position: 100% 50%; }
+}
+
+/* =========================
+   Utilities
+   ========================= */
+.glow-ring { position: relative; }
+.glow-ring::after {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; z-index: -1;
+  background: conic-gradient(from 180deg at 50% 50%,
+    rgba(99,102,241,0.35), rgba(6,182,212,0.25),
+    rgba(236,72,153,0.25), rgba(99,102,241,0.35));
+  filter: blur(16px); opacity: .6;
+}
+/* Nhẹ hơn trong Light */
+.theme-light .glow-ring::after { filter: blur(14px); opacity: .45; }
