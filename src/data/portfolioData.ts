@@ -2,7 +2,7 @@ export const DATA = {
   name: "Bùi Quang Huy",
   role: "Frontend Developer",
   summary:
-    "Lập trình viên giao diện yêu thích UX tối giản, hiệu năng cao và trải nghiệm mượt mà. 3+ năm làm việc với React/Next.js, TailwindCSS, GraphQL.",
+    "Fresher Frontend Developer, có kinh nghiệm thực hiện dự án học thuật với React, Next.js và TailwindCSS. Đam mê tạo ra sản phẩm tối ưu, hiện đại và sẵn sàng học hỏi trong môi trường doanh nghiệp",
   location: "Bình Dương",
   email: "buiquanghuy532001@gmail.com",
   phone: "0917002565",
