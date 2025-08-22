@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+/* Base text & background */
+:root {
+  color-scheme: dark;
+}
+html, body, #root {
+  height: 100%;
+}
+body {
+  background: #0b0d15;
+  color: rgb(243 244 246); /* gray-100 */
+}
+
+/* Galaxy layers (lưới + nebula) */
+.galaxy-bg {
+  position: relative;
+  isolation: isolate;
+}
+.galaxy-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(1200px 600px at 80% 10%, rgba(124,58,237,0.18), transparent 60%),
+    radial-gradient(1000px 500px at 15% 20%, rgba(6,182,212,0.12), transparent 65%),
+    radial-gradient(800px 500px at 70% 80%, rgba(236,72,153,0.12), transparent 60%);
+  z-index: -2;
+  pointer-events: none;
+}
+.galaxy-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(circle at 50% 40%, black 35%, transparent 75%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Glow tiện dụng cho nút/ảnh */
+.glow-ring {
+  position: relative;
+}
+.glow-ring::after {
+  content: "";
+  position: absolute; inset: -1px;
+  border-radius: inherit;
+  background: conic-gradient(from 180deg at 50% 50%,
+    rgba(99,102,241,0.35),
+    rgba(6,182,212,0.25),
+    rgba(236,72,153,0.25),
+    rgba(99,102,241,0.35)
+  );
+  filter: blur(16px);
+  opacity: .6;
+  z-index: -1;
+}
