@@ -1,7 +1,7 @@
 import {  ArrowRight, MapPin, Mail, Phone, Sparkles } from "lucide-react";
 import { DATA } from "../data/portfolioData";
 import Particles from "./Particles";
-import avata from "../assets/ava.png";
+import avata from "../assets/cv.jpg";
 import { useTheme } from "../theme";
 
 export default function Hero() {

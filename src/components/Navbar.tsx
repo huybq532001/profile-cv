@@ -39,7 +39,7 @@ export default function Navbar() {
                 className="h-8 w-8"
               />
             </div>
-            <span className="text-[color:var(--fg)] text-lg">MyCV</span>
+            <span className="text-[color:var(--fg)] text-lg">Portfolio</span>
           </a>
 
           {/* Desktop menu */}
